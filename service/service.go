@@ -12,6 +12,7 @@ func Save(p *model.Person) error {
 		return fmt.Errorf("DB is not initialized")
 	}
 
-	result := datasource.DB.Create(p)
+	person := p.GenerateUUID()
+	result := datasource.DB.Create(person)
 	return result.Error
 }
