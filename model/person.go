@@ -1,6 +1,8 @@
 package model
 
 import (
+	"fmt"
+
 	uuid "github.com/satori/go.uuid"
 )
 
@@ -15,7 +17,7 @@ func (Person) TableName() string {
 	return "persons"
 }
 
-func (p Person) GenerateUUID() Person {
+func (p *Person) GenerateUUID() {
 	p.Uuid = uuid.NewV4().String()
-	return p
+	fmt.Println("uuid generated ", p.Uuid)
 }
