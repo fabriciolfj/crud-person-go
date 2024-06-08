@@ -7,10 +7,10 @@ import (
 )
 
 type Person struct {
-	ID   uint   `gorm:"primaryKey"`
-	Name string `gorm:"size:100"`
-	Age  int
-	Uuid string
+	ID   uint   `gorm:"primaryKey" json:"id"`
+	Name string `gorm:"size:100" json:"name"`
+	Age  int    `json:"age"`
+	Uuid string `json:"uuid"`
 }
 
 func (Person) TableName() string {
