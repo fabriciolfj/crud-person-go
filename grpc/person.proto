@@ -1,0 +1,21 @@
+syntax = "proto3";
+option go_package = "github.com/person/grpc";
+
+package persongo;
+
+service PersonService {
+  rpc GetPerson(PersonRequest) returns (PersonResponse){}
+  rpc WatchPersons(WatchRequest) returns (stream PersonResponse) {}
+}
+
+message PersonRequest {
+  string id = 1;
+}
+
+message PersonResponse {
+  string id = 1;
+  string name = 2;
+  int32 age = 3;
+}
+
+message WatchRequest {}
