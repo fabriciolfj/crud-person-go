@@ -12,5 +12,7 @@ func main() {
 	http.HandleFunc("/person", controller.HandlePeople)
 
 	log.Println("Server starting on port 8000")
-	log.Fatal(http.ListenAndServe(":8000", nil))
+	if err := http.ListenAndServe(":8000", nil); err != nil {
+		log.Fatal("fail star server", err)
+	}
 }
