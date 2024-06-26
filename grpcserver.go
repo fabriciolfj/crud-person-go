@@ -50,7 +50,7 @@ func (s *server) WatchPersons(req *pb.WatchRequest, srv pb.PersonService_WatchPe
 	return nil
 }
 
-func main() {
+func mainOld() {
 	lis, err := net.Listen("tcp", ":50051")
 
 	if err != nil {

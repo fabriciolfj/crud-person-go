@@ -15,6 +15,8 @@ func Save(p *model.Person) error {
 
 	p.GenerateUUID()
 	result := datasource.DB.Create(p)
+
+	SendMessage(p)
 	return result.Error
 }
 

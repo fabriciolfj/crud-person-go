@@ -2,11 +2,11 @@ package controller
 
 import (
 	"encoding/json"
+	"github.com/person/service"
 	"net/http"
 
 	_ "github.com/person/datasource" // Importa o pacote para executar o init()
 	"github.com/person/model"
-	"github.com/person/service"
 )
 
 func getByUuid(w http.ResponseWriter, r *http.Request) {
