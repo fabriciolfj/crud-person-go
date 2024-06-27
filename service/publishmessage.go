@@ -16,7 +16,7 @@ func SendMessage(p *model.Person) {
 		return
 	}
 
-	err = rabbitmq.CH.Publish("", "person", false, false, amqp.Publishing{
+	err = rabbitmq.CH.Publish("person", "person", false, false, amqp.Publishing{
 		ContentType: "application/json",
 		Body:        value,
 	})
