@@ -22,11 +22,8 @@ func main() {
 	if err != nil {
 		log.Fatalf("Falha ao abrir um canal: %v", err)
 	}
-	defer ch.Close()
 
-	if err != nil {
-		log.Fatalf("Falha ao declarar a fila: %v", err)
-	}
+	defer ch.Close()
 
 	msgs, err := ch.Consume(
 		"person", // queue
@@ -37,6 +34,7 @@ func main() {
 		false,    // no-wait
 		nil,      // args
 	)
+
 	if err != nil {
 		log.Fatalf("Falha ao registrar o consumidor: %v", err)
 	}
