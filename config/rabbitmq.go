@@ -1,4 +1,4 @@
-package rabbitmq
+package config
 
 import (
 	"github.com/magiconair/properties"

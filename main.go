@@ -1,15 +1,18 @@
 package main
 
 import (
+	"context"
 	"github.com/hashicorp/consul/api"
 	"github.com/magiconair/properties"
+	log "github.com/person/config"
 	_ "github.com/person/datasource" // Importa o pacote para executar o init()
 	controller "github.com/person/entrypoint"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	uuid "github.com/satori/go.uuid"
-	"github.com/sirupsen/logrus"
 	"net/http"
 	"os"
+	"os/signal"
+	"time"
 )
 
 func registerService() {
@@ -25,7 +28,7 @@ func registerService() {
 	consul, err := api.NewClient(config)
 
 	if err != nil {
-		logrus.Fatal("fail to create consul client", err)
+		log.Log.Fatal("fail to create consul client", err)
 	}
 
 	registration := new(api.AgentServiceRegistration)
@@ -38,17 +41,37 @@ func registerService() {
 	err = consul.Agent().ServiceRegister(registration)
 
 	if err != nil {
-		logrus.Fatal("fail to register service: %v", err)
+		log.Log.Fatal("fail to register service: %v", err)
 	}
 }
 
 func main() {
 	registerService()
-	http.HandleFunc("/person", controller.HandlePeople)
+	mux := http.NewServeMux()
+	http.HandleFunc("/person", controller.RecoveryMiddleware(controller.HandlePeople))
 	http.Handle("/metrics", promhttp.Handler())
 
-	logrus.Println("Server starting on port 8000")
-	if err := http.ListenAndServe(":8000", nil); err != nil {
-		logrus.Fatal("fail star server", err)
+	go func() {
+		if err := http.ListenAndServe(":8100", nil); err != nil {
+			log.Log.Fatal("fail star server", err)
+		}
+	}()
+
+	server := &http.Server{
+		Addr:    ":8000",
+		Handler: mux,
 	}
+
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, os.Interrupt)
+	<-quit
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	if err := server.Shutdown(ctx); err != nil {
+		log.Log.Fatal("Server forced to shutdown: ", err)
+	}
+
+	log.Log.Info("Server exiting")
 }
