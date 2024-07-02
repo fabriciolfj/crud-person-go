@@ -1,14 +1,24 @@
 package rabbitmq
 
 import (
+	"github.com/magiconair/properties"
 	amqp "github.com/rabbitmq/amqp091-go"
+	"github.com/sirupsen/logrus"
 	"log"
+	"os"
 )
 
 var CH *amqp.Channel
 
 func init() {
-	conn, err := amqp.Dial("amqp://root:root@localhost:5672/")
+	p := properties.MustLoadFile("config.properties", properties.UTF8)
+	host := os.Getenv("RABBITMQ_HOST")
+	if host == "" {
+		host = p.MustGetString("rabbitmq_url")
+	}
+
+	logrus.Info(host)
+	conn, err := amqp.Dial(host)
 	if err != nil {
 		log.Printf("failed to connect to RabbitMQ: %s", err)
 	}

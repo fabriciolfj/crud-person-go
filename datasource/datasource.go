@@ -3,6 +3,7 @@ package datasource
 import (
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/magiconair/properties"
 	"github.com/person/model"
@@ -14,10 +15,15 @@ var DB *gorm.DB
 
 func init() {
 	p := properties.MustLoadFile("config.properties", properties.UTF8)
+	host := os.Getenv("MYSQL_HOST")
+	if host == "" {
+		host = p.MustGetString("db_host")
+	}
+
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
 		p.MustGetString("db_user"),
 		p.MustGetString("db_password"),
-		p.MustGetString("db_host"),
+		host,
 		p.MustGetString("db_port"),
 		p.MustGetString("db_name"),
 	)

@@ -1,5 +1,15 @@
 version: '3.3'
 services:
+  person:
+    image: person:latest
+    container_name: person
+    environment:
+      RABBITMQ_HOST: amqp://root:root@rabbitmq:5672/
+      MYSQL_HOST: database
+      CONSUL_URL: consul:8500
+    ports:
+      - 8000:8000
+
   database:
     image: mysql:5.7
     container_name: mysql
@@ -28,6 +38,12 @@ services:
       - rabbitmq_data:/var/lib/rabbitmq
       - rabbitmq_logs:/var/log/rabbitmq
     restart: unless-stopped
+
+  consul:
+    image: consul:1.15.4
+    ports:
+      - 8500:8500
+    command: [ "agent", "-dev", "-client", "0.0.0.0" ]
 
 volumes:
   rabbitmq_data:
