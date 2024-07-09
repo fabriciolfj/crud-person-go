@@ -7,6 +7,7 @@ import (
 	log "github.com/person/config"
 	_ "github.com/person/datasource" // Importa o pacote para executar o init()
 	controller "github.com/person/entrypoint"
+	_ "github.com/person/redis"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	uuid "github.com/satori/go.uuid"
 	"net/http"
